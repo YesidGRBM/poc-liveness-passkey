@@ -129,18 +129,7 @@
       };
       disabled = true;
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          height: {
-            min: document.body.clientHeight * 0.6,
-            max: document.body.clientHeight * 0.7,
-            ideal: document.body.clientHeight * 0.65
-          },
-          width: {
-            min: document.body.clientWidth * 0.8,
-            max: document.body.clientWidth * 0.9,
-            ideal: document.body.clientWidth * 0.85
-          }
-        },
+        video: true,
         audio: false,
       });
       videoEl.srcObject = stream;
@@ -161,6 +150,8 @@
       requestAnimationFrame(detectLoop);
       return;
     }
+    const video = videoEl.srcObject!
+    console.log((video as MediaStream).getVideoTracks().at(0)?.getConstraints())
 
     const result = await human.detect(videoEl, {
       body: { enabled: false },
