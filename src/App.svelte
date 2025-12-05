@@ -36,7 +36,7 @@
     const webgpuSupported = await isWebGPUSupported();
     human = new Human({
       backend: webgpuSupported ? "webgpu" : "webgl",
-      modelBasePath: "./models",
+      modelBasePath: "https://pub-d1f531aaf73045ad889560c07cc1dc51.r2.dev/models",
     });
     try {
       await human.load();
