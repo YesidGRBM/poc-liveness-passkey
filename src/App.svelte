@@ -93,7 +93,7 @@
     disabled = false;
   }
 
-  const onPlay = async () => {
+  async function onPlay() {
     start = true;
     try {
       if (!videoEl) {
@@ -207,3 +207,4 @@
     {/if}
   </section>
 </main>
+
