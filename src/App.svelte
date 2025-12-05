@@ -35,6 +35,18 @@
   }
 
   onMount(async () => {
+    console.log({
+          height: {
+            min: document.body.clientHeight * 0.8,
+            max: document.body.clientHeight * 0.9,
+            ideal: document.body.clientHeight * 0.85
+          },
+          width: {
+            min: document.body.clientWidth * 0.8,
+            max: document.body.clientWidth * 0.9,
+            ideal: document.body.clientWidth * 0.85
+          }
+        })
     webgpuSupported = await isWebGPUSupported();
     human = new Human({
       backend: webgpuSupported ? "webgpu" : "webgl",
