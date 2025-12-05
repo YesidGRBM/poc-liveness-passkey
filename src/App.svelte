@@ -12,7 +12,7 @@
   let start = $state(false);
 
   let errorMessage = $state("");
-  let documentNumber = $state("1097727605");
+  let documentNumber = $state("");
 
   const session = authClient.useSession;
 
@@ -52,10 +52,11 @@
     disabled = true;
     const { data, error } = await authClient.passkey.addPasskey({
       authenticatorAttachment: "cross-platform",
-      name: `Passkey de ${documentNumber}`
+      name: `Passkey:${documentNumber}`
     });
     if (error) {
-      errorMessage = "Error al registrar la passkey.";
+      console.error(error)
+      errorMessage = error.message ?? "Error al registrar la passkey.";
       loading = false;
       disabled = false;
       return;
@@ -83,6 +84,7 @@
   }
 
   async function onSignIn() {
+    if(!documentNumber.length) return;
     loading = true;
     disabled = true;
     const { error } = await authClient.signIn.anonymous();
