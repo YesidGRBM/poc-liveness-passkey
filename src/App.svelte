@@ -16,6 +16,8 @@
 
   const session = authClient.useSession;
 
+  let webgpuSupported = $state(false)
+
   async function isWebGPUSupported() {
     if (!navigator.gpu) {
       return false;
@@ -33,7 +35,7 @@
   }
 
   onMount(async () => {
-    const webgpuSupported = await isWebGPUSupported();
+    webgpuSupported = await isWebGPUSupported();
     human = new Human({
       backend: webgpuSupported ? "webgpu" : "webgl",
       modelBasePath: "https://pub-d1f531aaf73045ad889560c07cc1dc51.r2.dev/models",
@@ -48,6 +50,10 @@
   });
 
   async function registerPasskey() {
+    if(!documentNumber.length) {
+      alert('Numero de documento es requerido.')
+      return
+    }
     loading = true;
     disabled = true;
     const { data, error } = await authClient.passkey.addPasskey({
@@ -84,7 +90,10 @@
   }
 
   async function onSignIn() {
-    if(!documentNumber.length) return;
+    if(!documentNumber.length) {
+      alert('Numero de documento es requerido.')
+      return
+    }
     loading = true;
     disabled = true;
     const { error } = await authClient.signIn.anonymous();
@@ -96,6 +105,10 @@
   }
 
   async function onPlay() {
+    if(!documentNumber.length) {
+      alert('Numero de documento es requerido.')
+      return
+    }
     start = true;
     try {
       if (!videoEl) {
@@ -104,7 +117,18 @@
       };
       disabled = true;
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
+        video: {
+          height: {
+            min: document.body.clientHeight * 0.6,
+            max: document.body.clientHeight * 0.7,
+            ideal: document.body.clientHeight * 0.65
+          },
+          width: {
+            min: document.body.clientWidth * 0.8,
+            max: document.body.clientWidth * 0.9,
+            ideal: document.body.clientWidth * 0.85
+          }
+        },
         audio: false,
       });
       videoEl.srcObject = stream;
@@ -159,14 +183,21 @@
   <h1 class="text-3xl font-bold mb-4 text-center">
     POC RBM SDK Liveness
   </h1>
+  <h2 class="text-sm font-bold text-center">
+    {#if webgpuSupported}
+      Web GPU
+    {:else}
+      Webgl
+    {/if}
+  </h2>
   <section class="flex justify-center items-center">
     {#if errorMessage}
       <p class="text-red-500 mt-4">{errorMessage}</p>
     {:else}
       {#if start}
-        <section style="position:relative; width:640px; height:480px;">
+        <section style="position:relative;">
           <video bind:this={videoEl} muted></video>
-          <canvas bind:this={canvasEl} style="position:absolute; top:0; left:0;"></canvas>
+          <canvas bind:this={canvasEl} class="absolute top-0 left-0"></canvas>
         </section>
       {:else}
         <article class="card w-80 bg-base-100 shadow-xl">
