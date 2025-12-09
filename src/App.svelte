@@ -69,7 +69,7 @@
     loading = true;
     disabled = true;
     const { data, error } = await authClient.passkey.addPasskey({
-      authenticatorAttachment: "cross-platform",
+      authenticatorAttachment: "platform",
       name: `Passkey:${documentNumber}`
     });
     if (error) {
